@@ -43,7 +43,6 @@ class Series():
 
         fields = headers[3].split(',')
         result = [ get_for_field(c,f) for c,f in enumerate(fields)  ]
-        #print(result)
         return result
 
     def add_entry(self, entry):
@@ -69,7 +68,6 @@ class Entry():
         for c, field in enumerate(self.v[1:]):
             measure = measures[c+1];
             divider=postfixes[measure]
-            print(c, field, measure, divider, field/divider)
             string_fields.append( '{:.15f}'.format(field / divider)  )
 
         result = '\t'.join(string_fields)
