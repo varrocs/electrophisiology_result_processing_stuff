@@ -1,16 +1,20 @@
 import re
 
 #FILE_NAME="1810292ho.txt"
-FILE_NAME="1901073ho.txt"
+#FILE_NAME="1901073ho.txt"
+#FILE_NAME='testdata/1901241ho.txt'
+FILE_NAME='1903061ho.txt'
 FILE_CSV="out_{}-{}.csv"
 EMPTY=re.compile('^\\s*$')
 DOT_TO_COMMA=True
 
 
 postfixes={
+        'f': 1e-15,
         'p': 1e-12,
         'n': 1e-9,
         'u': 1e-6,
+        'µ': 1e-6,
         'm': 1e-3,
         '':  1,
         'k': 1e3,
@@ -41,7 +45,7 @@ class Series():
             elif 'a5/b4'    in f: return 'M'
             else: return ''
 
-        fields = headers[3].split(',')
+        fields = headers[3].replace(',','\t').split('\t')
         result = [ get_for_field(c,f) for c,f in enumerate(fields)  ]
         return result
 
