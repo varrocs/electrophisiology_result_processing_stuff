@@ -20,6 +20,7 @@ postfixes={
         'k': 1e3,
         'M': 1e6,
         'G': 1e9,
+        'T': 1e12,
         }
 
 def get_postfix(token):
