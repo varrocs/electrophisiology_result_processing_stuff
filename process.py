@@ -5,7 +5,8 @@ import re
 #FILE_NAME="1901073ho.txt"
 #FILE_NAME='testdata/1901241ho.txt'
 #FILE_NAME='1903061ho.txt'
-FILE_NAME='1905063ho.txt'
+#FILE_NAME='1905063ho.txt'
+FILE_NAME='1905171ho.txt'
 FILE_CSV="out_{}-{}.csv"
 EMPTY=re.compile('^\\s*$')
 SWEEP=re.compile('^Sweep')
@@ -94,7 +95,7 @@ def write_file(filename, content):
 
 def skip_line(content):
     if not content:
-        return None, None
+        return None, []
     else:
         return (content[0].strip(), content[1:])
 
