@@ -1,11 +1,14 @@
+# -*- coding: utf-8 -*-
 import re
 
 #FILE_NAME="1810292ho.txt"
 #FILE_NAME="1901073ho.txt"
 #FILE_NAME='testdata/1901241ho.txt'
-FILE_NAME='1903061ho.txt'
+#FILE_NAME='1903061ho.txt'
+FILE_NAME='1905063ho.txt'
 FILE_CSV="out_{}-{}.csv"
 EMPTY=re.compile('^\\s*$')
+SWEEP=re.compile('^Sweep')
 DOT_TO_COMMA=True
 
 
@@ -46,7 +49,8 @@ class Series():
             elif 'a5/b4'    in f: return 'M'
             else: return ''
 
-        fields = headers[3].replace(',','\t').split('\t')
+        last_headers_line = headers[len(headers)-1]
+        fields = last_headers_line.replace(',','\t').split('\t')
         result = [ get_for_field(c,f) for c,f in enumerate(fields)  ]
         return result
 
@@ -114,8 +118,14 @@ def parse_line(line):
     values = list(map(token_value, tokens))
     return Entry(values)
 
-
 def read_next_series(content):
+    all_content = "\n".join(content)
+    if all_content.find('SERIES_') >= 0:
+        return read_next_series_regular(content)
+    else:
+        return read_next_series_no_header(content)
+
+def read_next_series_regular(content):
     line_header_1, content = skip_until_prefix(content, 'SERIES_')
     if not line_header_1: return None, None
     line_header_2, content = skip_line(content)
@@ -129,6 +139,20 @@ def read_next_series(content):
         series.add_entry(entry)
         entry_line, content = skip_line(content)
     return series, content
+
+def read_next_series_no_header(content):
+    line_header_1, content = skip_until_prefix(content, 'Sweep')
+    if not line_header_1: return None, None
+
+    series = Series([line_header_1])
+    prev_content=content
+    entry_line, content = skip_line(content)
+    while entry_line is not None and not EMPTY.match(entry_line) and not SWEEP.match(entry_line):
+        entry = parse_line(entry_line)
+        series.add_entry(entry)
+        prev_content = content
+        entry_line, content = skip_line(content)
+    return series, prev_content
 
 
 def process_content(content):
